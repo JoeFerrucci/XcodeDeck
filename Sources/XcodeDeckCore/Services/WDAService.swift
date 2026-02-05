@@ -34,8 +34,8 @@ public actor WDAService {
         // Find WDA project path
         let wdaPath = try await locateWDAProject()
 
-        // Build WDA for the simulator
-        try await buildWDA(wdaPath: wdaPath, simulatorUDID: simulator.udid)
+        // Build WDA for the simulator (this can take several minutes on first run)
+        try await buildWDA(wdaPath: wdaPath, simulatorUDID: simulator.udid, verbose: true)
 
         // Start WDA via xcodebuild test-without-building
         let process = Process()
@@ -61,7 +61,7 @@ public actor WDAService {
         self.wdaProcess = process
 
         // Wait for WDA to be ready
-        try await waitForWDAReady(port: port)
+        try await waitForWDAReady(port: port, verbose: true)
 
         self.wdaClient = WDAClient(port: port)
     }
@@ -118,21 +118,33 @@ public actor WDAService {
         throw WDAServiceError.wdaNotFound
     }
 
-    private func buildWDA(wdaPath: String, simulatorUDID: String) async throws {
+    private func buildWDA(wdaPath: String, simulatorUDID: String, verbose: Bool = false) async throws {
+        if verbose {
+            print("🔨 Building WebDriverAgent (this may take a few minutes on first run)...")
+        }
+
         let result = try await shell.run("xcodebuild", arguments: [
             "-project", wdaPath,
             "-scheme", "WebDriverAgentRunner",
             "-destination", "id=\(simulatorUDID)",
             "-derivedDataPath", NSTemporaryDirectory() + "XcodeDeck/WDA",
-            "build-for-testing"
+            "build-for-testing",
+            "-quiet"
         ])
 
         guard result.succeeded else {
             throw WDAServiceError.buildFailed(result.stderr)
         }
+
+        if verbose {
+            print("✅ WebDriverAgent built successfully")
+        }
     }
 
-    private func waitForWDAReady(port: Int, timeout: TimeInterval = 60) async throws {
+    private func waitForWDAReady(port: Int, timeout: TimeInterval = 60, verbose: Bool = false) async throws {
+        if verbose {
+            print("🔄 Starting WebDriverAgent server...")
+        }
         let startTime = Date()
         let statusURL = URL(string: "http://localhost:\(port)/status")!
 
@@ -148,6 +160,9 @@ public actor WDAService {
                     // Parse response to check ready status
                     if let json = try? JSONDecoder().decode(WDAStatusResponse.self, from: data),
                        json.value.ready {
+                        if verbose {
+                            print("✅ WebDriverAgent ready")
+                        }
                         return
                     }
                 }

@@ -42,9 +42,6 @@ public struct UIScreenshotCommand: AsyncParsableCommand {
 
         // Ensure WDA is running
         if await !wdaService.isRunning {
-            if !globalOptions.json {
-                print("🔄 Starting WebDriverAgent...")
-            }
             try await wdaService.start(simulator: sim)
         }
 

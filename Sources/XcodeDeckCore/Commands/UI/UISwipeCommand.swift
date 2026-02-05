@@ -48,9 +48,6 @@ public struct UISwipeCommand: AsyncParsableCommand {
 
         // Ensure WDA is running
         if await !wdaService.isRunning {
-            if !globalOptions.json {
-                print("🔄 Starting WebDriverAgent...")
-            }
             try await wdaService.start(simulator: sim)
         }
 
