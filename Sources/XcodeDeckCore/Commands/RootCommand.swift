@@ -5,7 +5,7 @@ public struct XcodeDeck: AsyncParsableCommand {
     public static let configuration = CommandConfiguration(
         commandName: "xcodedeck",
         abstract: "iOS/macOS development CLI tool - a local FlowDeck alternative",
-        version: "1.0.0",
+        version: Version.fullVersion,
         subcommands: [
             BuildCommand.self,
             TestCommand.self,

@@ -4,20 +4,13 @@ A local, open-source alternative to FlowDeck for iOS development automation. Xco
 
 ## Installation
 
-### From Source
-
 ```bash
 git clone --recursive https://github.com/yourorg/XcodeDeck.git
 cd XcodeDeck
-swift build -c release
-cp .build/release/xcodedeck /usr/local/bin/
-```
-
-Or use the install script:
-
-```bash
 ./Scripts/install.sh
 ```
+
+This builds a release binary and installs it to `/usr/local/bin/xcodedeck`.
 
 ### Dependencies
 
@@ -141,6 +134,51 @@ If WDA is not found, clone it manually:
 
 ```bash
 git clone https://github.com/appium/WebDriverAgent.git ~/Developer/WebDriverAgent
+```
+
+## Development
+
+### Building
+
+Use the build script for development builds with automatic versioning:
+
+```bash
+./Scripts/build.sh
+```
+
+This generates a version string with full traceability:
+
+```
+0.1.0 (2-c7a9f93+dirty 20260205.1802)
+       │ │       │      └── build timestamp (YYYYMMDD.HHMM)
+       │ │       └── uncommitted changes flag
+       │ └── git commit hash
+       └── commit count
+```
+
+The debug binary is at `.build/debug/xcodedeck`.
+
+### Releasing
+
+1. Update the `VERSION` file with the new semantic version
+2. Commit all changes (clears the `+dirty` flag)
+3. Run the install script:
+
+```bash
+./Scripts/install.sh
+```
+
+4. Tag the release:
+
+```bash
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+### Version Check
+
+```bash
+xcodedeck --version
 ```
 
 ## Command Reference
