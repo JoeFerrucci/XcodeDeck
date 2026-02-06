@@ -7,36 +7,20 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
 VERSION_FILE="$PROJECT_DIR/Sources/XcodeDeckCore/Version.swift"
 
-# Get version info
+# Get version from VERSION file
 VERSION=$(cat "$PROJECT_DIR/VERSION")
-BUILD_TIMESTAMP=$(date +"%Y%m%d.%H%M")
-COMMIT_COUNT=$(git -C "$PROJECT_DIR" rev-list --count HEAD 2>/dev/null || echo "0")
-COMMIT_HASH=$(git -C "$PROJECT_DIR" rev-parse --short HEAD 2>/dev/null || echo "unknown")
-DIRTY_FLAG=$(git -C "$PROJECT_DIR" diff --quiet 2>/dev/null && git -C "$PROJECT_DIR" diff --cached --quiet 2>/dev/null || echo "+dirty")
-GIT_INFO="${COMMIT_COUNT}-${COMMIT_HASH}${DIRTY_FLAG}"
 
-echo "Building XcodeDeck v${VERSION} (${GIT_INFO} ${BUILD_TIMESTAMP})..."
+echo "Building XcodeDeck v${VERSION}..."
 cd "$PROJECT_DIR"
 
-# Generate Version.swift with build info
+# Generate Version.swift
 cat > "$VERSION_FILE" << EOF
 import Foundation
 
 /// Version information for XcodeDeck
 public enum Version {
-    /// Semantic version (major.minor.patch)
     public static let version = "${VERSION}"
-
-    /// Build timestamp (YYYYMMDD.HHMM)
-    public static let timestamp = "${BUILD_TIMESTAMP}"
-
-    /// Git info (commits-hash+dirty)
-    public static let gitInfo = "${GIT_INFO}"
-
-    /// Full version string for display
-    public static var fullVersion: String {
-        "\\(version) (\\(gitInfo) \\(timestamp))"
-    }
+    public static var fullVersion: String { version }
 }
 EOF
 
@@ -59,5 +43,5 @@ else
 fi
 
 echo ""
-echo "Installed xcodedeck v${VERSION} (${GIT_INFO} ${BUILD_TIMESTAMP}) to $INSTALL_DIR/xcodedeck"
+echo "Installed xcodedeck v${VERSION} to $INSTALL_DIR/xcodedeck"
 echo "Run 'xcodedeck --version' to verify."

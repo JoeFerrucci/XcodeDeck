@@ -140,7 +140,7 @@ git clone https://github.com/appium/WebDriverAgent.git ~/Developer/WebDriverAgen
 
 ### Building
 
-Use the build script for development builds with automatic versioning:
+Use the build script (required - it generates `Version.swift`):
 
 ```bash
 ./Scripts/build.sh

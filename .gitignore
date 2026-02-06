@@ -3,6 +3,9 @@
 .swiftpm/
 Package.resolved
 
+# Generated at build time
+Sources/XcodeDeckCore/Version.swift
+
 # Xcode
 xcuserdata/
 *.xcscmblueprint
