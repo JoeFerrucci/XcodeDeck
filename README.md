@@ -149,7 +149,7 @@ Use the build script (required - it generates `Version.swift`):
 This generates a version string with full traceability:
 
 ```
-0.1.0 (2-c7a9f93+dirty 20260205.1802)
+0.1.0 (3-c7a9f93-dirty 20260205.1802)
        │ │       │      └── build timestamp (YYYYMMDD.HHMM)
        │ │       └── uncommitted changes flag
        │ └── git commit hash
@@ -161,7 +161,7 @@ The debug binary is at `.build/debug/xcodedeck`.
 ### Releasing
 
 1. Update the `VERSION` file with the new semantic version
-2. Commit all changes (clears the `+dirty` flag)
+2. Commit all changes (clears the `-dirty` flag)
 3. Run the install script:
 
 ```bash
@@ -175,10 +175,19 @@ git tag v0.2.0
 git push origin v0.2.0
 ```
 
-### Version Check
+### Version Formats
 
-```bash
-xcodedeck --version
+Development builds include full tracking info:
+```
+$ .build/debug/xcodedeck --version
+0.1.0 (3-c7a9f93-dirty 20260205.1802)
+```
+
+Installed builds show version and commit:
+```
+$ xcodedeck --version
+0.1.0 (c7a9f93)        # clean build from committed code
+0.1.0 (c7a9f93-dirty)  # built with uncommitted changes
 ```
 
 ## Command Reference

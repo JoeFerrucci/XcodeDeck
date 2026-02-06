@@ -11,7 +11,7 @@ VERSION=$(cat "$PROJECT_DIR/VERSION")
 BUILD_TIMESTAMP=$(date +"%Y%m%d.%H%M")
 COMMIT_COUNT=$(git -C "$PROJECT_DIR" rev-list --count HEAD 2>/dev/null || echo "0")
 COMMIT_HASH=$(git -C "$PROJECT_DIR" rev-parse --short HEAD 2>/dev/null || echo "unknown")
-DIRTY_FLAG=$(git -C "$PROJECT_DIR" diff --quiet 2>/dev/null && git -C "$PROJECT_DIR" diff --cached --quiet 2>/dev/null || echo "+dirty")
+DIRTY_FLAG=$(git -C "$PROJECT_DIR" diff --quiet 2>/dev/null && git -C "$PROJECT_DIR" diff --cached --quiet 2>/dev/null || echo "-dirty")
 GIT_INFO="${COMMIT_COUNT}-${COMMIT_HASH}${DIRTY_FLAG}"
 
 cd "$PROJECT_DIR"

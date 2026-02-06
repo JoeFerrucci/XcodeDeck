@@ -9,8 +9,11 @@ VERSION_FILE="$PROJECT_DIR/Sources/XcodeDeckCore/Version.swift"
 
 # Get version from VERSION file
 VERSION=$(cat "$PROJECT_DIR/VERSION")
+COMMIT_HASH=$(git -C "$PROJECT_DIR" rev-parse --short HEAD 2>/dev/null || echo "unknown")
+DIRTY_FLAG=$(git -C "$PROJECT_DIR" diff --quiet 2>/dev/null && git -C "$PROJECT_DIR" diff --cached --quiet 2>/dev/null || echo "-dirty")
+BUILD_ID="${COMMIT_HASH}${DIRTY_FLAG}"
 
-echo "Building XcodeDeck v${VERSION}..."
+echo "Building XcodeDeck v${VERSION} (${BUILD_ID})..."
 cd "$PROJECT_DIR"
 
 # Generate Version.swift
@@ -20,7 +23,8 @@ import Foundation
 /// Version information for XcodeDeck
 public enum Version {
     public static let version = "${VERSION}"
-    public static var fullVersion: String { version }
+    public static let build = "${BUILD_ID}"
+    public static var fullVersion: String { "\\(version) (\\(build))" }
 }
 EOF
 
@@ -43,5 +47,5 @@ else
 fi
 
 echo ""
-echo "Installed xcodedeck v${VERSION} to $INSTALL_DIR/xcodedeck"
+echo "Installed xcodedeck v${VERSION} (${BUILD_ID}) to $INSTALL_DIR/xcodedeck"
 echo "Run 'xcodedeck --version' to verify."
